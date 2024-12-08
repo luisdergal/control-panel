@@ -1,0 +1,47 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Stats {
+  id            Int      @id @default(autoincrement())
+  totalUsers    Int
+  activeUsers   Int
+  activeRegions Int
+  vipUsers      Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  regions   UserRegion[]
+}
+
+model Region {
+  id        Int        @id @default(autoincrement())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  users     UserRegion[]
+}
+
+model UserRegion {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  regionId  Int
+  user      User       @relation(fields: [userId], references: [id])
+  region    Region     @relation(fields: [regionId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId, regionId]) // Evita duplicados para un usuario y región
+}
