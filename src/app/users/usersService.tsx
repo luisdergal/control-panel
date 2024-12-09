@@ -11,12 +11,14 @@ export async function fetchUsers() {
   }
 }
 
-export async function addUser(name: string, email: string) {
+export async function addUser(name: string, email: string, isActive: boolean, isVip: boolean) {
   try {
     const currentTime = dayjs().toISOString(); 
     const { data } = await supabaseAxios.post('/User', {
       name,
       email,
+      isActive,
+      isVip,
       updatedAt: currentTime, 
     });
     return data;
